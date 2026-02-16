@@ -1,0 +1,48 @@
+name: Revive Old Flutter App
+on: [workflow_dispatch]
+
+jobs:
+  revive-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      # 1️⃣ Checkout repo
+      - uses: actions/checkout@v4
+
+      # 2️⃣ Install old Flutter version (example: 1.12.13+hotfix.9)
+      - name: Setup Old Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '1.12.13+hotfix.9' # adjust if you know exact version
+          channel: stable
+
+      # 3️⃣ Ensure flutter binary works
+      - name: Flutter doctor
+        run: flutter doctor
+
+      # 4️⃣ Get dependencies (old versions)
+      - name: Get packages
+        run: flutter pub get
+
+      # 5️⃣ Clean previous builds
+      - name: Clean build
+        run: flutter clean
+
+      # 6️⃣ Build release APK
+      - name: Build APK
+        run: flutter build apk --release
+
+      # 7️⃣ Upload APK as artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      # 8️⃣ Commit any auto-generated changes safely
+      - name: Commit changes if any
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "Revived old project structure"
+          git push || echo "No changes to commit"
