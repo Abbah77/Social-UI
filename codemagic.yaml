@@ -1,0 +1,25 @@
+workflows:
+  revive_social_ui:
+    name: Revive Social-UI App
+    max_build_duration: 60
+    environment:
+      flutter:
+        # Use an older Flutter version compatible with your pubspec
+        version: 2.10.5
+      xcode: default
+      cocoapods: default
+      vars:
+        FLUTTER_BUILD_MODE: release
+    scripts:
+      - name: Install dependencies
+        script: flutter pub get
+      - name: Clean build
+        script: flutter clean
+      - name: Build Android APK
+        script: flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+    publishing:
+      email:
+        recipients:
+          - your_email@example.com
