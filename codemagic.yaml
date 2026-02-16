@@ -4,9 +4,8 @@ workflows:
     max_build_duration: 60
     environment:
       flutter:
-        # Use an older Flutter version compatible with your pubspec
-        version: 2.10.5
-      xcode: default
+        version: 2.10.5   # compatible with your pubspec
+      # Removed xcode since this is Android-only
       cocoapods: default
       vars:
         FLUTTER_BUILD_MODE: release
